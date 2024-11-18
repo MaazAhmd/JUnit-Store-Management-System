@@ -1,0 +1,7 @@
+# IntelliJ IDEA
+.idea/
+StoreManagementApp.iml
+app_local_settings.txt
+
+# Maven
+target/
