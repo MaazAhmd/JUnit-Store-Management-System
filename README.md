@@ -1,20 +1,17 @@
 # Java Swing Store Management App
 ## An application for managing the users and products in a store
+## Java Project Unit Testing using JUnit
 
 ---
 
-The aim for this project was for me to have my first experience with Java by using the Swing GUI framework and MySQL
-database.
+The aim for this project is to gets a hands-on experience in Testing Java Applications using JUnit, a Unit testing framework.
 
-PS: The project was written mainly in the IntelliJ IDEA IDE, but the Swing GUI Forms were not used, instead, all 
-GUI components were handwritten.
+A SQLite database is used for this application.
 
-PPS: The Mavem framework has been added to the project, still, no unit tests were developed for the current build.
-
-The project is still a work in progress:
+The following list is a summary of the complete and incomplete features of this Java Swing Application.
 
 - [x] Create a GUI base with the Swing library/framework
-- [x] Integrate the MySQL database into the project
+- [x] Integrate the SQLite database into the project
 - [x] Create the login page with authentication
 - [x] Create the menu page
 - [x] Create the manager's pages
