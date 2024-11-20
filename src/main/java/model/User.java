@@ -17,4 +17,24 @@ public class User {
         this.email = email;
         this.accessLevel = accessLevel;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAccessLevel() {
+        return accessLevel;
+    }
 }

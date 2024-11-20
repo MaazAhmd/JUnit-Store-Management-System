@@ -36,19 +36,20 @@ import javax.swing.table.DefaultTableModel;
 import model.dao.SaleDAO;
 
 public class SearchSaleFrame extends JFrame implements ActionListener {
-    private final JPanel bottomPanel, topPanel, tablePanel;
-    private final JLabel startDateLabel, endDateLabel;
-    private final JTextField startDateTextField, endDateTextField;
-    private final JButton backButton, searchButton, generateCSVButton;
-    private final Dimension inputBoxDimension = new Dimension(100, 20),
+    public final JPanel bottomPanel, topPanel, tablePanel;
+    public final JLabel startDateLabel, endDateLabel;
+    public final JTextField startDateTextField, endDateTextField;
+    public JButton backButton, searchButton, generateCSVButton;
+    public final Dimension inputBoxDimension = new Dimension(100, 20),
             tableDimension = new Dimension(800, 500), buttonsDimension = new Dimension(100, 25);
-    private final Color mainColor = Color.white, inputColor = Color.black;
-    private final JTable table;
-    private final DefaultTableModel tableModel;
-    private final JScrollPane scrollPane;
-    private Object[][] tableData;
-    private final String[] tableColumns = {"ID", "Total cost", "Attendant", "Date"};
-    private final SaleDAO saleDAO;
+    public final Color mainColor = Color.white, inputColor = Color.black;
+    public final JTable table;
+    public final DefaultTableModel tableModel;
+    public final JScrollPane scrollPane;
+    public Object[][] tableData;
+    public final String[] tableColumns = {"ID", "Total cost", "Attendant", "Date"};
+
+    public SaleDAO saleDAO;
 
     SearchSaleFrame() throws SQLException {
         saleDAO = new SaleDAO();
@@ -139,7 +140,8 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
         /****************************** Frame ******************************/
     }
 
-    private void setButtonDesign(JButton button) {
+
+    public void setButtonDesign(JButton button) {
         button.setPreferredSize(buttonsDimension);
         button.setFocusable(false);
         button.setBorder(BorderFactory.createLineBorder(inputColor));
@@ -158,14 +160,14 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
         });
     }
 
-    private void updateTable() {
+    public void updateTable() {
         int currentRowCount = tableModel.getRowCount();
         tableModel.setRowCount(0);
         tableModel.setRowCount(currentRowCount);
         tableModel.setDataVector(tableData, tableColumns);
     }
 
-    private void searchTableData() {
+    public void searchTableData() {
         SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -191,7 +193,7 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
         updateTable();
     }
 
-    private void generateCSVFromTable() {
+    public void generateCSVFromTable() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileFilter() {
             public String getDescription() {
@@ -242,5 +244,9 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
             }
             this.dispose();
         }
+    }
+
+    public void setSaleDAO(SaleDAO saleDAO) {
+        this.saleDAO = saleDAO;
     }
 }

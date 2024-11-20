@@ -18,4 +18,20 @@ public class Sale {
         this.sellerUsername = sellerUsername;
         this.date = date;
     }
+
+    public float getTotalCost() {
+        return totalCost;
+    }
+
+    public String getSellerUsername() {
+        return sellerUsername;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
