@@ -27,25 +27,32 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import lombok.Setter;
 import model.Product;
 import model.dao.ProductDAO;
 
 public class ManageProductsFrame extends JFrame implements ActionListener {
     private final JPanel bottomPanel, inputsPanel, tablePanel;
     private final JLabel idLabel, nameLabel, priceLabel, categoryLabel, instructionLabel;
-    private final JTextField idTextField, nameTextField, priceTextField;
-    private final JComboBox<String> categoryComboBox;
-    private final JButton backButton, createProductButton, updateProductButton, deleteProductButton;
+    final JTextField idTextField;
+    final JTextField nameTextField;
+    final JTextField priceTextField;
+    final JComboBox<String> categoryComboBox;
+    public final JButton backButton;
+    final JButton createProductButton;
+    final JButton updateProductButton;
+    final JButton deleteProductButton;
     private final Dimension labelDimension = new Dimension(85, 20), inputBoxDimension = new Dimension(180, 20),
             inputPanelDimension = new Dimension((int)(labelDimension.getWidth() + inputBoxDimension.getWidth()) + 20, 0),
             tableDimension = new Dimension(690, 600), buttonsDimension = new Dimension(105, 25);
     private final Color mainColor = Color.white, inputColor = Color.black;
     private final DefaultTableModel tableModel;
-    private final JTable productDataTable;
+    final JTable productDataTable;
     private final JScrollPane scrollPane;
-    private Object[][] productData;
+    Object[][] productData;
     private final String[] tableColumns, categoriesArray;
-    private final ProductDAO productDAO;
+    @Setter
+    private ProductDAO productDAO;
 
     ManageProductsFrame() throws SQLException{
         productDAO = new ProductDAO();
@@ -204,7 +211,7 @@ public class ManageProductsFrame extends JFrame implements ActionListener {
         categoryComboBox.setSelectedIndex(0);
     }
 
-    private void updateTable() {
+    void updateTable() {
         int currentRowCount = tableModel.getRowCount();
         tableModel.setRowCount(0);
         tableModel.setRowCount(currentRowCount);

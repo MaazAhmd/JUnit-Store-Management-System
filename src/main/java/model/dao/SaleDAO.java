@@ -22,14 +22,13 @@ public class SaleDAO {
     }
 
     public boolean createSale(Sale sale) throws SQLException {
-        query = "INSERT INTO Sale VALUES(?, ?, ?, ?)";
-        statement = connection.prepareStatement(query);
-        statement.setString(1, null);
-        statement.setFloat(2, sale.getTotalCost());
-        statement.setString(3, sale.getSellerUsername());
-        statement.setString(4, sale.getDate());
-        insertedLines = statement.executeUpdate();
-        return(insertedLines != 0);
+        String query = "INSERT INTO Sale (total_cost, seller_username, date) VALUES (?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setFloat(1, sale.getTotalCost());
+        statement.setString(2, sale.getSellerUsername());
+        statement.setString(3, sale.getDate());
+        int insertedLines = statement.executeUpdate();
+        return insertedLines != 0;
     }
 
     public boolean updateSale(Sale sale) throws SQLException {

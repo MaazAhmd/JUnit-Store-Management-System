@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import lombok.Getter;
 import lombok.Setter;
 import model.dao.SaleDAO;
 
@@ -48,6 +49,7 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
     public final JTable table;
     public final DefaultTableModel tableModel;
     public final JScrollPane scrollPane;
+    @Getter
     @Setter
     public JFileChooser fileChooser;
     public Object[][] tableData;
@@ -344,6 +346,7 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
             }
         }
     }
+
 }
 
 

@@ -45,7 +45,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
     private final JScrollPane scrollPane;
     private Object[][] userData;
     private final String[] tableColumns;
-    private final UserDAO userDAO;
+    final UserDAO userDAO;
 
     ManageUsersFrame() throws SQLException{
         userDAO = new UserDAO();
@@ -217,7 +217,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
         tableModel.setDataVector(userData, tableColumns);
     }
 
-    private void dbCreateUser(User user) {
+    void dbCreateUser(User user) {
         if (isBoxesEmpty()) {
             JOptionPane.showMessageDialog(null, "You must fill all text fields!",
                     "Input error", JOptionPane.WARNING_MESSAGE);
@@ -238,7 +238,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void dbUpdateUser(User user) {
+    void dbUpdateUser(User user) {
         if (isBoxesEmpty()) {
             JOptionPane.showMessageDialog(null, "You must fill all text fields!",
                     "Input error", JOptionPane.WARNING_MESSAGE);
@@ -259,7 +259,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void dbDeleteUser() {
+    void dbDeleteUser() {
         if (userDataTable.getSelectionModel().isSelectionEmpty()) {
             JOptionPane.showMessageDialog(null, "You must pick a line from the table!",
                     "Delete error", JOptionPane.WARNING_MESSAGE);
