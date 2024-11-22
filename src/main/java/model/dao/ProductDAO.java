@@ -21,14 +21,13 @@ public class ProductDAO {
     }
 
     public boolean createProduct(Product product) throws SQLException {
-        query = "INSERT INTO Product VALUES(?, ?, ?, ?)";
-        statement = connection.prepareStatement(query);
-        statement.setString(1, null);
-        statement.setString(2, product.getName());
-        statement.setString(3, product.getCategory());
-        statement.setString(4, product.getPrice());
-        insertedLines = statement.executeUpdate();
-        return(insertedLines != 0);
+        String query = "INSERT INTO Product (name, category, price) VALUES (?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, product.getName());
+        statement.setString(2, product.getCategory());
+        statement.setString(3, product.getPrice());
+        int insertedLines = statement.executeUpdate();
+        return insertedLines != 0;
     }
 
     public String[][] readProductsTableData() throws SQLException {
