@@ -32,7 +32,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
+import lombok.Setter;
 import model.dao.SaleDAO;
 
 public class SearchSaleFrame extends JFrame implements ActionListener {
@@ -46,12 +48,16 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
     public final JTable table;
     public final DefaultTableModel tableModel;
     public final JScrollPane scrollPane;
+    @Setter
+    public JFileChooser fileChooser;
     public Object[][] tableData;
-    public final String[] tableColumns = {"ID", "Total cost", "Attendant", "Date"};
+    public String[] tableColumns = {"ID", "Total cost", "Attendant", "Date"};
 
+    @Setter
     public SaleDAO saleDAO;
 
     SearchSaleFrame() throws SQLException {
+
         saleDAO = new SaleDAO();
 
         /****************************** Frame ******************************/
@@ -153,6 +159,7 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
             public void mouseEntered(MouseEvent event) {
                 button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
+
             @Override
             public void mouseExited(MouseEvent event) {
                 button.setCursor(Cursor.getDefaultCursor());
@@ -167,33 +174,59 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
         tableModel.setDataVector(tableData, tableColumns);
     }
 
+
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
     public void searchTableData() {
         SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        Date startDateDate = new Date();
-        Date endDateDate = new Date();
+        Date startDateDate = null;
+        Date endDateDate = null;
+
+        // Attempt to parse the start and end dates
         try {
             startDateDate = originalFormat.parse(startDateTextField.getText());
             endDateDate = originalFormat.parse(endDateTextField.getText());
         } catch (ParseException parseException) {
             parseException.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Try this date format: dd/mm/yyyy!",
-                    "Date format error", JOptionPane.WARNING_MESSAGE);
+            // Display error message for invalid date format
+            showErrorMessage("Try this date format: dd/mm/yyyy!");
+            return; // Exit method to prevent further execution with invalid dates
         }
 
+        // Check if dates are valid (e.g., not null and within a valid range)
+        if (startDateDate == null || endDateDate == null || startDateDate.after(endDateDate)) {
+            // Show error message if dates are invalid
+            showErrorMessage("Start date must be before or equal to end date.");
+            return; // Exit method to prevent further execution with invalid dates
+        }
+
+        // Format the dates into the required SQL format
         String startDateString = sqlFormat.format(startDateDate);
         String endDateString = sqlFormat.format(endDateDate);
 
         try {
+            // Call the DAO to get the table data for the specified date range
             tableData = saleDAO.readSalesTableData(startDateString, endDateString);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            // Optionally, you can display an error message for the SQLException
+            showErrorMessage("Error fetching data from the database.");
         }
+
+        // Update the table with the fetched data
         updateTable();
     }
 
-    public void generateCSVFromTable() {
+
+
+
+
+    /*public void generateCSVFromTable() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileFilter() {
             public String getDescription() {
@@ -228,25 +261,89 @@ public class SearchSaleFrame extends JFrame implements ActionListener {
                 ioException.printStackTrace();
             }
         }
-    }
+    }*/
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        if(event.getSource().equals(searchButton)) {
-            searchTableData();
-        } else if(event.getSource().equals(generateCSVButton)) {
-            generateCSVFromTable();
-        } else if(event.getSource().equals(backButton)) {
-            try {
-                new MenuFrame();
-            } catch (IOException | SQLException exception) {
-                exception.printStackTrace();
+    public void generateCSVFromTable() {
+        fileChooser = new JFileChooser();  // Initialize JFileChooser
+
+        // Set file filter to only accept CSV files
+        fileChooser.setFileFilter(new FileFilter() {
+            public String getDescription() {
+                return "CSV Files";  // Description shown in the file chooser dialog
             }
-            this.dispose();
+
+            public boolean accept(File file) {
+                if (file.isDirectory()) {
+                    return true;  // Allow directories
+                } else {
+                    String filename = file.getName().toLowerCase();
+                    return filename.endsWith(".csv");  // Only allow CSV files
+                }
+            }
+        });
+
+        // Show the save file dialog and get the user's response
+        int fileChooserResponse = fileChooser.showSaveDialog(null);
+
+        // If the user selected a file, proceed to save it
+        if (fileChooserResponse == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            saveCSVToFile(file);  // Call the method to save the file
         }
     }
 
-    public void setSaleDAO(SaleDAO saleDAO) {
-        this.saleDAO = saleDAO;
+    void saveCSVToFile(File file) {
+        try {
+            // Create FileWriter to write CSV content
+            FileWriter fileWriter = new FileWriter(file);
+
+            // Write CSV header
+            fileWriter.write("ID,Total cost,Attendant,Date");
+
+            // Get the table's model to access the data
+            TableModel model = table.getModel();
+
+            // Write table data row by row
+            for (int i = 0; i < model.getRowCount(); i++) {
+                fileWriter.append("\n");  // Add a new line for each row
+                for (int j = 0; j < model.getColumnCount(); j++) {
+                    if (j > 0) fileWriter.append(",");  // Separate columns with a comma
+                    // Assuming the data is stored as String; if it's another type, adjust accordingly
+                    fileWriter.append(model.getValueAt(i, j).toString());
+                }
+            }
+
+            // Close the writer to save the file
+            fileWriter.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();  // Handle IO exceptions if needed
+        }
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        Object source = event.getSource();
+
+        if (source.equals(searchButton)) {
+            // Trigger the search table data functionality
+            searchTableData();
+        } else if (source.equals(generateCSVButton)) {
+            // Generate CSV from the table data
+            generateCSVFromTable();
+        } else if (source.equals(backButton)) {
+            // Navigate to the menu frame and dispose of the current frame
+            try {
+                new MenuFrame(); // Open the menu frame
+            } catch (IOException | SQLException exception) {
+                exception.printStackTrace();
+            } finally {
+                // Ensure the current frame is disposed of
+
+                this.dispose();
+            }
+        }
     }
 }
+
+
