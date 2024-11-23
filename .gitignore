@@ -5,3 +5,6 @@ app_local_settings.txt
 
 # Maven
 target/
+
+swing_store_database.db-shm
+swing_store_database.db-wal
