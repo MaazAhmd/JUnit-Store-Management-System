@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -217,7 +218,8 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
         tableModel.setDataVector(userData, tableColumns);
     }
 
-    private void dbCreateUser(User user) {
+    boolean dbCreateUser(User user) {
+        boolean flag=false;
         if (isBoxesEmpty()) {
             JOptionPane.showMessageDialog(null, "You must fill all text fields!",
                     "Input error", JOptionPane.WARNING_MESSAGE);
@@ -229,16 +231,24 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
                             "User created", JOptionPane.INFORMATION_MESSAGE);
                     emptyBoxes();
                     updateTable();
+                    flag=true;  // Return true when user creation is successful
                 }
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Someting went wrong!",
+                JOptionPane.showMessageDialog(null, "Something went wrong!",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        if(flag)
+        {
+            return  true;
+        }
+        else
+        return false; // Return false if there's an error or validation failure
     }
 
-    private void dbUpdateUser(User user) {
+
+    boolean dbUpdateUser(String existingUsername, User user) {
         if (isBoxesEmpty()) {
             JOptionPane.showMessageDialog(null, "You must fill all text fields!",
                     "Input error", JOptionPane.WARNING_MESSAGE);
@@ -250,6 +260,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
                             "User updated", JOptionPane.INFORMATION_MESSAGE);
                     emptyBoxes();
                     updateTable();
+                    System.out.println("okay");
                 }
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
@@ -257,9 +268,10 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        return true;
     }
 
-    private void dbDeleteUser() {
+    boolean dbDeleteUser(String username) {
         if (userDataTable.getSelectionModel().isSelectionEmpty()) {
             JOptionPane.showMessageDialog(null, "You must pick a line from the table!",
                     "Delete error", JOptionPane.WARNING_MESSAGE);
@@ -284,6 +296,7 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
                 }
             }
         }
+        return true;
     }
 
     @Override
@@ -297,9 +310,11 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
         if (event.getSource().equals(createUserButton)) {
             dbCreateUser(user);
         } else if (event.getSource().equals(updateUserButton)) {
-            dbUpdateUser(user);
+            String existingUsername = "";
+            dbUpdateUser(existingUsername, user);
         } else if (event.getSource().equals(deleteUserButton)) {
-            dbDeleteUser();
+            String username = "";
+            dbDeleteUser(username);
         } else if (event.getSource().equals(backButton)) {
             try {
                 userDAO.close();
@@ -309,5 +324,10 @@ public class ManageUsersFrame extends JFrame implements ActionListener {
             }
             this.dispose();
         }
+    }
+
+
+    public Collection<Object> getAllUsers() {
+        return java.util.List.of();
     }
 }

@@ -36,8 +36,8 @@ import model.dao.UserDAO;
 public class LoginFrame extends JFrame implements ActionListener, FocusListener {
     private final JPanel logoPanel, loginPanel, titleLabelPanel, inputsPanel, invisiblePanel;
     private final JLabel logoLabel, titleLabel, usernameLabel, passwordLabel, invisibleLabel1, invisibleLabel2;
-    private final JTextField usernameTextField;
-    private final JPasswordField passwordPasswordField;
+    final JTextField usernameTextField;
+    final JPasswordField passwordPasswordField;
     private final String defaultUsernameText = "Enter username...", defaultPasswordText = "Enter password...";
     private final JCheckBox showPasswordCheckBox;
     private final char defaultPasswordChar;
@@ -179,7 +179,7 @@ public class LoginFrame extends JFrame implements ActionListener, FocusListener 
         }
     }
 
-    private boolean loginAuthentication() {
+    boolean loginAuthentication() {
         try {
             user = userDAO.readUser(usernameTextField.getText());
         } catch (SQLException sqlException) {
